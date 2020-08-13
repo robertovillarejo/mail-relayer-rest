@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "mx.conacyt.crip"
+    },
+    "jhipsterVersion": "6.10.1",
+    "applicationType": "microservice",
+    "baseName": "mailrelayer",
+    "packageName": "mx.conacyt.crip",
+    "packageFolder": "mx/conacyt/crip",
+    "serverPort": "8081",
+    "authenticationType": "oauth2",
+    "cacheProvider": "hazelcast",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "maven",
+    "enableSwaggerCodegen": true,
+    "jwtSecretKey": "YjY3OWJkMzg4OWM2ZDk1ZGY4Yjg1MDY4OWE2MjJhMjgyZWE0YjBiZDkzMGJiODBhMDhlYmNhNzFhMTE2YjBjZTU2YWYwYmZmYjYwMjliYjQyYjE1NWMwYTc4MzdmMzg2N2U3Nzc0NmFkYjc0YzkzMjBiYTJiOTIxOTVhY2Q5ZDA=",
+    "embeddableLaunchScript": false,
+    "creationTimestamp": 1597359626466,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "clientPackageManager": "npm",
+    "blueprints": [],
+    "skipClient": true,
+    "skipUserManagement": true
+  }
+}
