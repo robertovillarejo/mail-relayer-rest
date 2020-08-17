@@ -17,7 +17,7 @@ logging:
   level:
     ROOT: DEBUG
     io.github.jhipster: DEBUG
-    mx.conacyt.crip: DEBUG
+    mx.conacyt.crip.mail: DEBUG
 
 eureka:
   instance:
@@ -66,7 +66,7 @@ spring:
         enabled: true
 
 server:
-  port: 8081
+  port: 9090
 
 # ===================================================================
 # JHipster specific properties
@@ -107,7 +107,6 @@ jhipster:
       queue-size: 512
   audit-events:
     retention-period: 30 # Number of days before audit events are deleted.
-
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
@@ -117,4 +116,5 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  relay-port: 2525

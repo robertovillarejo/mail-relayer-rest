@@ -134,11 +134,11 @@ spring:
       client:
         provider:
           oidc:
-            issuer-uri: http://localhost:9080/auth/realms/jhipster
+            issuer-uri: https://idm.crip.conacyt.mx/auth/realms/master
         registration:
           oidc:
-            client-id: internal
-            client-secret: internal
+            client-id: dev-users
+            client-secret: acfa0479-d58c-438d-96f3-b65dd0d83f43
 
 server:
   servlet:

@@ -1,0 +1,127 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "mailrelayer",
+    "version": "0.0.1",
+    "description": "Servicio de envío de correos para uso de aplicaciones de CONACYT.\nEnvía los correos electrónicos hacia un servidor SMTP que otorga permisos de retransmisión a este servicio basado en IP.",
+    "contact": {
+      "name": "Roberto Villarejo Martínez",
+      "email": "roberto.villarejo@comimsa.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://mailrelayer:8081/api",
+      "description": "Development server"
+    },
+    {
+      "url": "https://mailrelayer:8081/api",
+      "description": "Development server with TLS Profile"
+    }
+  ],
+  "paths": {
+    "/emails": {
+      "post": {
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Email"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["email"],
+        "responses": {
+          "200": {
+            "description": "Se ha enviado el correo electrónico."
+          }
+        },
+        "operationId": "sendEmail",
+        "summary": "Envía un correo electrónico",
+        "description": "Envía un correo electrónico."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Email": {
+        "title": "Root Type for Email",
+        "description": "Un correo electrónico",
+        "required": ["from", "subject", "to"],
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "from": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "plain_body": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "to": ["user@example.com"],
+          "from": "no-reply@example.com",
+          "subject": "Asunto del mensaje",
+          "plain_body": "Cuerpo del mensaje"
+        }
+      }
+    },
+    "responses": {
+      "Problem": {
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "https://opensource.zalando.com/problem/schema.yaml#/Problem"
+            }
+          }
+        },
+        "description": "error occurred - see status code and problem object for more information."
+      }
+    },
+    "securitySchemes": {
+      "oauth": {
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/protocol/openid-connect/auth",
+            "tokenUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/protocol/openid-connect/token",
+            "scopes": {
+              "miic": "Miic specific claims",
+              "email": "Email claims",
+              "profile": "Profile claims"
+            }
+          }
+        },
+        "type": "oauth2",
+        "description": "OAuth2 authentication with KeyCloak"
+      },
+      "openId": {
+        "openIdConnectUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/.well-known/openid-configuration",
+        "type": "openIdConnect",
+        "description": "OpenID Connect authentication with KeyCloak"
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth": ["miic", "email", "profile"]
+    },
+    {
+      "openId": ["miic", "email", "profile"]
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 {
   "generator-jhipster": {
     "promptValues": {
-      "packageName": "mx.conacyt.crip"
+      "packageName": "mx.conacyt.crip.mail"
     },
     "jhipsterVersion": "6.10.1",
     "applicationType": "microservice",
     "baseName": "mailrelayer",
-    "packageName": "mx.conacyt.crip",
-    "packageFolder": "mx/conacyt/crip",
+    "packageName": "mx.conacyt.crip.mail",
+    "packageFolder": "mx/conacyt/crip/mail",
     "serverPort": "8081",
     "authenticationType": "oauth2",
     "cacheProvider": "hazelcast",
@@ -21,9 +21,9 @@
     "serviceDiscoveryType": "eureka",
     "buildTool": "maven",
     "enableSwaggerCodegen": true,
-    "jwtSecretKey": "YjY3OWJkMzg4OWM2ZDk1ZGY4Yjg1MDY4OWE2MjJhMjgyZWE0YjBiZDkzMGJiODBhMDhlYmNhNzFhMTE2YjBjZTU2YWYwYmZmYjYwMjliYjQyYjE1NWMwYTc4MzdmMzg2N2U3Nzc0NmFkYjc0YzkzMjBiYTJiOTIxOTVhY2Q5ZDA=",
+    "jwtSecretKey": "MzQyYmI4Y2RmNTlkNGQzMmQ5ZTVhODI2NmZiZTg5ZWRmN2U5OGEyODNmYjQ4ZjcxODBiZjllYWU4ZjUxZTcxMTQ2YzRhMGQyNjA3NzE0ODljMzdhZTkyOGZlYTI3YWY3NmJjM2JhNWIxMTQzZDY2ZjljYjYxZWU2NmIzMjRmNWI=",
     "embeddableLaunchScript": false,
-    "creationTimestamp": 1597359626466,
+    "creationTimestamp": 1597360032561,
     "testFrameworks": [],
     "jhiPrefix": "jhi",
     "entitySuffix": "",
