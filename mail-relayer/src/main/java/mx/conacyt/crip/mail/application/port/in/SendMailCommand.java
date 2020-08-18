@@ -10,11 +10,13 @@ import lombok.Getter;
 public class SendMailCommand {
 
     private final Email email;
+    private final boolean async;
 
-    public SendMailCommand(Email email) {
+    public SendMailCommand(final Email email, final boolean async) {
         Objects.requireNonNull(email.getFromRecipient());
         Objects.requireNonNull(email.getRecipients());
         this.email = email;
+        this.async = async;
     }
 
 }

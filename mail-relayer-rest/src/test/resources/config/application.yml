@@ -96,4 +96,6 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  relay-host: 127.0.0.1
+  relay-port: 5050

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import mx.conacyt.crip.mail.application.port.in.SendMailUseCase;
+import mx.conacyt.crip.mail.application.port.out.EmailAcknowledger;
 import mx.conacyt.crip.mail.config.ApplicationProperties;
 
 @Configuration
@@ -17,8 +18,8 @@ public class MailRelayerConfiguration {
     }
 
     @Bean
-    public SendMailUseCase sendMailUseCase(Mailer mailer) {
-        return new SendMailService(mailer);
+    public SendMailUseCase sendMailUseCase(Mailer mailer, EmailAcknowledger acknowledger) {
+        return new SendMailService(mailer, acknowledger);
     }
 
 }

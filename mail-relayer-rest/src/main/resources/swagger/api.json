@@ -27,7 +27,7 @@
     "/emails": {
       "post": {
         "requestBody": {
-          "description": "",
+          "description": "El correo electrónico a enviar.",
           "content": {
             "application/json": {
               "schema": {
@@ -38,9 +38,25 @@
           "required": true
         },
         "tags": ["email"],
+        "parameters": [
+          {
+            "name": "async",
+            "description": "Indica si se desea enviar de forma asíncrona.",
+            "schema": {
+              "type": "boolean"
+            },
+            "in": "query"
+          }
+        ],
         "responses": {
-          "200": {
-            "description": "Se ha enviado el correo electrónico."
+          "201": {
+            "description": "Se envió el correo electrónico."
+          },
+          "202": {
+            "description": "Se encoló el correo electrónico para su envío."
+          },
+          "400": {
+            "description": "Error en la petición."
           }
         },
         "operationId": "sendEmail",
@@ -97,10 +113,10 @@
       "oauth": {
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/protocol/openid-connect/auth",
-            "tokenUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/protocol/openid-connect/token",
+            "authorizationUrl": "https://idm.crip.conacyt.mx/auth/realms/master/protocol/openid-connect/auth",
+            "tokenUrl": "https://idm.crip.conacyt.mx/auth/realms/master/protocol/openid-connect/token",
             "scopes": {
-              "miic": "Miic specific claims",
+              "master": "master specific claims",
               "email": "Email claims",
               "profile": "Profile claims"
             }
@@ -110,7 +126,7 @@
         "description": "OAuth2 authentication with KeyCloak"
       },
       "openId": {
-        "openIdConnectUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/.well-known/openid-configuration",
+        "openIdConnectUrl": "https://idm.crip.conacyt.mx/auth/realms/master/.well-known/openid-configuration",
         "type": "openIdConnect",
         "description": "OpenID Connect authentication with KeyCloak"
       }
@@ -118,10 +134,10 @@
   },
   "security": [
     {
-      "oauth": ["miic", "email", "profile"]
+      "oauth": ["master", "email", "profile"]
     },
     {
-      "openId": ["miic", "email", "profile"]
+      "openId": ["master", "email", "profile"]
     }
   ]
 }
