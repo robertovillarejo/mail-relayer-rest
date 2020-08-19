@@ -1,28 +1,20 @@
 package mx.conacyt.crip.mail.repository;
 
-import mx.conacyt.crip.mail.domain.User;
+import java.util.Optional;
 
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import mx.conacyt.crip.mail.domain.UserMongoEntity;
 
 /**
- * Spring Data MongoDB repository for the {@link User} entity.
+ * Spring Data MongoDB repository for the {@link UserMongoEntity} entity.
  */
 @Repository
-public interface UserRepository extends MongoRepository<User, String> {
+public interface UserRepository extends MongoRepository<UserMongoEntity, String> {
 
-    String USERS_BY_LOGIN_CACHE = "usersByLogin";
+    Optional<UserMongoEntity> findByName(String name);
 
-    String USERS_BY_EMAIL_CACHE = "usersByEmail";
+    boolean existsByName(String name);
 
-    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
-    Optional<User> findOneByLogin(String login);
-
-    Page<User> findAllByLoginNot(Pageable pageable, String login);
 }

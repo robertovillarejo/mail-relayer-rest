@@ -25,6 +25,7 @@
   ],
   "paths": {
     "/emails": {
+      "summary": "Envío de correos electrónicos",
       "post": {
         "requestBody": {
           "description": "El correo electrónico a enviar.",
@@ -59,9 +60,50 @@
             "description": "Error en la petición."
           }
         },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ],
         "operationId": "sendEmail",
         "summary": "Envía un correo electrónico",
         "description": "Envía un correo electrónico."
+      }
+    },
+    "/users": {
+      "summary": "Administración de usuarios",
+      "post": {
+        "requestBody": {
+          "description": "La información del usuario a registrar.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "NewUser": {
+                  "value": {
+                    "name": "awesomeApp"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Se ha creado el usuario."
+          }
+        },
+        "security": [
+          {
+            "oauth": ["master", "email", "profile"],
+            "openId": []
+          }
+        ],
+        "operationId": "registerUser",
+        "summary": "Registra un usuario."
       }
     }
   },
@@ -94,6 +136,19 @@
           "from": "no-reply@example.com",
           "subject": "Asunto del mensaje",
           "plain_body": "Cuerpo del mensaje"
+        }
+      },
+      "User": {
+        "title": "Root Type for User",
+        "description": "Un usuario.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "awesomeApp"
         }
       }
     },
@@ -129,6 +184,12 @@
         "openIdConnectUrl": "https://idm.crip.conacyt.mx/auth/realms/master/.well-known/openid-configuration",
         "type": "openIdConnect",
         "description": "OpenID Connect authentication with KeyCloak"
+      },
+      "ApiKey": {
+        "type": "apiKey",
+        "description": "Token de API",
+        "name": "X-API-KEY",
+        "in": "header"
       }
     }
   },

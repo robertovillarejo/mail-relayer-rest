@@ -1,13 +1,15 @@
 package mx.conacyt.crip.mail.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
 import mx.conacyt.crip.mail.application.port.out.EmailAcknowledger;
 
-@Slf4j
 @Component
 public class MailAcknowledgerLogger implements EmailAcknowledger {
+
+    private final Logger log = LoggerFactory.getLogger(MailAcknowledgerLogger.class);
 
     @Override
     public void success(String msgId) {

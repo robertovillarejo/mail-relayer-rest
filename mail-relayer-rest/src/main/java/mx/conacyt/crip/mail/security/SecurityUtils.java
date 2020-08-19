@@ -94,7 +94,7 @@ public final class SecurityUtils {
             claims.getOrDefault("roles", new ArrayList<>()));
     }
 
-    private static List<GrantedAuthority> mapRolesToGrantedAuthorities(Collection<String> roles) {
+    static List<GrantedAuthority> mapRolesToGrantedAuthorities(Collection<String> roles) {
         return roles.stream()
             .filter(role -> role.startsWith("ROLE_"))
             .map(SimpleGrantedAuthority::new)
