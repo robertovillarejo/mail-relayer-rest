@@ -1,0 +1,114 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: compile
+    image: maven:3.6-jdk-11
+    volumes:
+      - name: m2
+        path: /root/.m2
+    commands:
+      - mvn -f mail-relayer/pom.xml install
+      - mvn -f mail-relayer-rest/pom.xml package
+    when:
+      event:
+        - push
+        - pull_request
+        - rollback
+
+  - name: integration test
+    image: maven:3.6-jdk-11
+    volumes:
+      - name: m2
+        path: /root/.m2
+      - name: docker_sock
+        path: /var/run/docker.sock
+    commands:
+      - mvn -f mail-relayer-rest/pom.xml clean verify -Pprod
+    when:
+      status: [success]
+      branch:
+        exclude:
+          - hotfix*
+          - release*
+          - master
+      event:
+        - push
+
+  - name: analize
+    image: maven:3.6-jdk-11
+    volumes:
+      - name: m2
+        path: /root/.m2
+    environment:
+      SONAR_HOST:
+        from_secret: sonar_host
+      SONAR_TOKEN:
+        from_secret: sonar_token
+    commands:
+      - mvn -f mail-relayer-rest/pom.xml sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.buildString=$DRONE_BUILD_NUMBER -Dsonar.sources=src/main
+    when:
+      status: [success]
+      event:
+        - push
+
+  - name: docker publish master
+    image: maven:3.6-jdk-11
+    volumes:
+      - name: m2
+        path: /root/.m2
+      - name: docker_sock
+        path: /var/run/docker.sock
+    commands:
+      - mvn -f mail-relayer-rest/pom.xml -Pprod verify jib:build -Djib.to.tags=latest
+    environment:
+      REGISTRY_USERNAME:
+        from_secret: registry_username
+      REGISTRY_PASSWORD:
+        from_secret: registry_password
+    when:
+      branch:
+        include:
+          - master
+      event:
+        - push
+
+  - name: apicurio api publish
+    image: peterevans/curl-jq
+    commands:
+      - ./post_oas.sh
+    environment:
+      APICURIO_HOST:
+        from_secret: apicurio_host
+      APICURIO_CLIENT_SECRET:
+        from_secret: apicurio_client_secret
+      APICURIO_USER_PASSWORD:
+        from_secret: apicurio_user_password
+
+  - name: slack compile error
+    image: plugins/slack
+    settings:
+      webhook: $$SLACK_WEBHOOK
+      channel: apis
+    environment:
+      SLACK_WEBHOOK:
+        from_secret: slack_webhook
+    when:
+      status: [failure]
+      event:
+        - push
+      branch:
+        exclude:
+          - develop
+          - release*
+          - hotfixes
+          - master
+
+volumes:
+  - name: m2
+    host:
+      path: /u01/m2
+  - name: docker_sock
+    host:
+      path: /var/run/docker.sock

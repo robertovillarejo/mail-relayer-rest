@@ -95,7 +95,7 @@ public class EmailResourceIT {
                         .content(TestUtil.convertObjectToJsonBytes(email())))
                 // Then
                 .andExpect(status().isAccepted()).andExpect(header().exists("Location"));
-        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(emailWasReceived(true));
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until(emailWasReceived(true));
         verifySentEmail();
     }
 

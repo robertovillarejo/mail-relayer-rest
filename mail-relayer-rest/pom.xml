@@ -9,6 +9,11 @@
     <name>Mailrelayer</name>
 
     <repositories>
+        <repository>
+            <id>crip-conacyt</id>
+            <name>repositorio para crip</name>
+            <url>https://artifacts.crip.conacyt.mx/content/groups/public/</url>
+        </repository>
         <!-- jhipster-needle-maven-repository -->
     </repositories>
 
@@ -562,7 +567,11 @@
                             <image>adoptopenjdk:11-jre-hotspot</image>
                         </from>
                         <to>
-                            <image>mailrelayer:latest</image>
+                            <image>registry.crip.conacyt.mx/library/mailrelayer:latest</image>
+                            <auth>
+                                <username>${env.REGISTRY_USERNAME}</username>
+                                <password>${env.REGISTRY_PASSWORD}</password>
+                            </auth>
                         </to>
                         <container>
                             <entrypoint>
