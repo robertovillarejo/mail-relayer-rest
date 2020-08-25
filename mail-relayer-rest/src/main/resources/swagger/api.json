@@ -78,7 +78,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/UserRegistration"
               },
               "examples": {
                 "NewUser": {
@@ -104,6 +104,38 @@
         ],
         "operationId": "registerUser",
         "summary": "Registra un usuario."
+      }
+    },
+    "/users/{name}": {
+      "summary": "Administra la información de un usuario.",
+      "description": "Administra la información del usuario con nombre especificado.",
+      "get": {
+        "parameters": [
+          {
+            "name": "name",
+            "description": "El nombre del usuario.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Consulta exitosa."
+          }
+        },
+        "operationId": "getUserByName",
+        "summary": "Consuilta la información del usuario",
+        "description": "Consulta la información del usuario con el nombre especificado."
       }
     }
   },
@@ -138,9 +170,9 @@
           "plain_body": "Cuerpo del mensaje"
         }
       },
-      "User": {
+      "UserRegistration": {
         "title": "Root Type for User",
-        "description": "Un usuario.",
+        "description": "La información requerida para el registro de un usuario.",
         "type": "object",
         "properties": {
           "name": {
@@ -149,6 +181,25 @@
         },
         "example": {
           "name": "awesomeApp"
+        }
+      },
+      "User": {
+        "title": "Root Type for User",
+        "description": "Un usuario.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "El nombre del usuario.",
+            "type": "string"
+          },
+          "apiKey": {
+            "description": "La API key que utiliza para autenticarse.",
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "Bob",
+          "apiKey": "abc123abc123abc123abc123"
         }
       }
     },

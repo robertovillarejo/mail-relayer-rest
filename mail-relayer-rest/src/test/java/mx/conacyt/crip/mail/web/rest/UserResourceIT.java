@@ -2,7 +2,9 @@ package mx.conacyt.crip.mail.web.rest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import mx.conacyt.crip.mail.MailrelayerApp;
 import mx.conacyt.crip.mail.adapter.in.web.UserResource;
 import mx.conacyt.crip.mail.config.TestSecurityConfiguration;
+import mx.conacyt.crip.mail.domain.SecretKeyMongoEntity;
 import mx.conacyt.crip.mail.domain.UserMongoEntity;
 import mx.conacyt.crip.mail.repository.SecretKeyRepository;
 import mx.conacyt.crip.mail.repository.UserRepository;
@@ -35,6 +38,7 @@ import mx.conacyt.crip.mail.web.model.User;
 public class UserResourceIT {
 
     public static final String USERNAME = "awesomeapp";
+    public static final String SECRET_KEY_CONTENT = "awesomeapp";
 
     @Autowired
     private UserRepository userRepository;
@@ -84,6 +88,19 @@ public class UserResourceIT {
         postUser(user)
                 // Then
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void getUserByName() throws Exception {
+        // Given
+        UserMongoEntity user = new UserMongoEntity().name(USERNAME);
+        userRepository.save(user);
+        secretKeyRepository.save(new SecretKeyMongoEntity().user(user).content(SECRET_KEY_CONTENT));
+        // When
+        restUserMockMvc.perform(get("/api/users/{name}", USERNAME).contentType(MediaType.APPLICATION_JSON_VALUE))
+                // Then
+                .andExpect(status().isOk()).andExpect(jsonPath("$.apiKey").value(SECRET_KEY_CONTENT))
+                .andExpect(jsonPath("$.name").value(USERNAME));
     }
 
     public ResultActions postUser(User user) throws IOException, Exception {

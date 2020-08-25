@@ -6,11 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import mx.conacyt.crip.mail.application.port.in.GenerateSecretKeyUseCase;
+import mx.conacyt.crip.mail.application.port.in.GetSecretKeyQuery;
 import mx.conacyt.crip.mail.application.port.in.GetUserBySecretKeyQuery;
 import mx.conacyt.crip.mail.application.port.in.RegisterUserUseCase;
 import mx.conacyt.crip.mail.application.port.in.SendMailUseCase;
 import mx.conacyt.crip.mail.application.port.out.CreateUserPort;
 import mx.conacyt.crip.mail.application.port.out.EmailAcknowledger;
+import mx.conacyt.crip.mail.application.port.out.LoadSecretKeyPort;
 import mx.conacyt.crip.mail.application.port.out.LoadUserPort;
 import mx.conacyt.crip.mail.application.port.out.SaveEmailPort;
 import mx.conacyt.crip.mail.application.port.out.SaveSecretKeyPort;
@@ -44,6 +46,11 @@ public class ApplicationConfiguration {
     @Bean
     public GetUserBySecretKeyQuery getUserBySecretKeyService(LoadUserPort loadUserPort) {
         return new GetUserBySecretKeyService(loadUserPort);
+    }
+
+    @Bean
+    public GetSecretKeyQuery getSecretKeyQuery(LoadSecretKeyPort loadSecretKeyPort) {
+        return new GetSecretKeyService(loadSecretKeyPort);
     }
 
 }

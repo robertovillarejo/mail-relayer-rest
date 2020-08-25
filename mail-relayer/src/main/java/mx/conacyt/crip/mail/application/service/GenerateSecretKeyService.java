@@ -1,8 +1,9 @@
 package mx.conacyt.crip.mail.application.service;
 
+import java.util.Optional;
+
 import com.google.common.eventbus.Subscribe;
 
-import java.util.Optional;
 import mx.conacyt.crip.mail.application.port.in.GenerateSecretKeyUseCase;
 import mx.conacyt.crip.mail.application.port.out.LoadUserPort;
 import mx.conacyt.crip.mail.application.port.out.SaveSecretKeyPort;
