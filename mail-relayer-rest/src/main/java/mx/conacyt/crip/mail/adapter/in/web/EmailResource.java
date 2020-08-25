@@ -4,7 +4,13 @@ import static mx.conacyt.crip.mail.security.AuthoritiesConstants.ADMIN;
 import static mx.conacyt.crip.mail.security.AuthoritiesConstants.USER;
 
 import java.net.URI;
+import java.util.Base64;
+import java.util.stream.Collectors;
 
+import javax.mail.util.ByteArrayDataSource;
+
+import org.simplejavamail.api.email.AttachmentResource;
+import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.email.EmailBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +51,35 @@ public class EmailResource implements EmailsApiDelegate {
     }
 
     private org.simplejavamail.api.email.Email map(Email email) {
-        return EmailBuilder.startingBlank().toMultiple(email.getTo()).from(email.getFrom())
-                .withSubject(email.getSubject()).withPlainText(email.getPlainBody()).buildEmail();
+        // @formatter:off
+        EmailPopulatingBuilder builder =
+            EmailBuilder.startingBlank()
+                .toMultiple(email.getTo())
+                .from(email.getSender())
+                .withSubject(email.getSubject());
+        // @formatter:on
+        if (email.getCc() != null) {
+            builder.ccAddresses(email.getCc());
+        }
+        if (email.getBcc() != null) {
+            builder.bccAddresses(email.getBcc());
+        }
+        if (email.getReplyTo() != null) {
+            builder.withReplyTo(email.getReplyTo());
+        }
+        if (email.getPlainBody() != null) {
+            builder.withPlainText(email.getPlainBody());
+        }
+        if (email.getHtmlBody() != null) {
+            builder.withHTMLText(email.getHtmlBody());
+        }
+        if (email.getAttachments() != null) {
+            builder.withAttachments(email.getAttachments().stream()
+                    .map(a -> new AttachmentResource(a.getFilename(),
+                            new ByteArrayDataSource(Base64.getDecoder().decode(a.getData()), a.getContentType())))
+                    .collect(Collectors.toList()));
+        }
+        return builder.buildEmail();
     }
 
     private URI toUri(String msgId) {

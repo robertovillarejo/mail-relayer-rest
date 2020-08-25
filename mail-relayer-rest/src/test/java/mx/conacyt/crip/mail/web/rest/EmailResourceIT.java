@@ -74,12 +74,13 @@ public class EmailResourceIT {
 
     @Test
     public void sendMailSync() throws Exception {
-        // Given
         server.reset();
+        // Given
+        Email email = givenEmail();
         // When
         restEmailMockMvc
                 .perform(post("/api/emails").contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(TestUtil.convertObjectToJsonBytes(email())))
+                        .content(TestUtil.convertObjectToJsonBytes(email)))
                 // Then
                 .andExpect(status().isCreated()).andExpect(header().exists("Location"));
         verifySentEmail();
@@ -87,12 +88,13 @@ public class EmailResourceIT {
 
     @Test
     public void sendMailAsyncSuccess() throws IOException, Exception {
-        // Given
         server.reset();
+        // Given
+        Email email = givenEmail();
         // When
         restEmailMockMvc
                 .perform(post("/api/emails?async=true").contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(TestUtil.convertObjectToJsonBytes(email())))
+                        .content(TestUtil.convertObjectToJsonBytes(email)))
                 // Then
                 .andExpect(status().isAccepted()).andExpect(header().exists("Location"));
         Awaitility.await().atMost(30, TimeUnit.SECONDS).until(emailWasReceived(true));
@@ -101,12 +103,13 @@ public class EmailResourceIT {
 
     @Test
     public void sendMailAsyncFailsAndNotify() throws Exception {
-        // Given
         server.stop();
+        // Given
+        Email email = givenEmail();
         // When
         restEmailMockMvc
                 .perform(post("/api/emails?async=true").contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(TestUtil.convertObjectToJsonBytes(email())))
+                        .content(TestUtil.convertObjectToJsonBytes(email)))
                 // Then
                 .andExpect(status().isAccepted()).andExpect(header().exists("Location"));
         Awaitility.await().between(1L, TimeUnit.MILLISECONDS, 1L, TimeUnit.SECONDS).until(emailWasReceived(false));
@@ -114,8 +117,8 @@ public class EmailResourceIT {
         server = SimpleSmtpServer.start(server.getPort());
     }
 
-    private Email email() {
-        return new Email().from(SENDER).to(Arrays.asList(RECIPIENT)).plainBody(BODY).subject(SUBJECT);
+    private Email givenEmail() {
+        return new Email().sender(SENDER).to(Arrays.asList(RECIPIENT)).plainBody(BODY).subject(SUBJECT);
     }
 
     private void verifySentEmail() {

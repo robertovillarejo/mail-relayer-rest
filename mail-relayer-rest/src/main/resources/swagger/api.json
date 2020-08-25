@@ -144,30 +144,74 @@
       "Email": {
         "title": "Root Type for Email",
         "description": "Un correo electrónico",
-        "required": ["from", "subject", "to"],
+        "required": ["subject", "to", "sender"],
         "type": "object",
         "properties": {
           "to": {
+            "description": "Lista de destinatarios.",
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "from": {
-            "type": "string"
-          },
           "subject": {
+            "description": "El asunto del correo.",
             "type": "string"
           },
           "plain_body": {
+            "description": "Cuerpo del mensaje en texto plano.",
             "type": "string"
+          },
+          "cc": {
+            "description": "Lista de destinatarios a los que se les envía copia del correo.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "bcc": {
+            "description": "Lista de destinatarios ocultos a los que se les envía copia del correo.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reply_to": {
+            "description": "Dirección de correo de electrónico a la que el/los destinatarios pueden responder.",
+            "type": "string"
+          },
+          "sender": {
+            "description": "La dirección de correo electrónico desde donde se envía el mensaje.",
+            "type": "string"
+          },
+          "html_body": {
+            "description": "Cuerpo del mensaje en HTML.",
+            "type": "string"
+          },
+          "attachments": {
+            "description": "Lista de archivos adjuntos codificados en base 64.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
           }
         },
         "example": {
           "to": ["user@example.com"],
-          "from": "no-reply@example.com",
+          "cc": ["userCC@example.com"],
+          "bcc": ["userBCC@example.com"],
+          "reply_to": "reply_to@example.com",
+          "sender": "sender@example.com",
           "subject": "Asunto del mensaje",
-          "plain_body": "Cuerpo del mensaje"
+          "plain_body": "Cuerpo del mensaje en texto plano",
+          "html_body": "<html><h1>Cuerpo del mensaje en HTML</h1></html>",
+          "attachments": [
+            {
+              "filename": "documento.pdf",
+              "content_type": "application/pdf",
+              "data": "adjuntoEnBase64"
+            }
+          ]
         }
       },
       "UserRegistration": {
@@ -200,6 +244,27 @@
         "example": {
           "name": "Bob",
           "apiKey": "abc123abc123abc123abc123"
+        }
+      },
+      "Attachment": {
+        "title": "Root Type for Attachment",
+        "description": "Un archivo adjunto.",
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "filename": "documento.pdf",
+          "content_type": "application/pdf",
+          "data": "contenidoEnBase64"
         }
       }
     },
