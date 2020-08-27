@@ -9,8 +9,8 @@ steps:
       - name: m2
         path: /root/.m2
     commands:
-      - mvn -f mail-relayer/pom.xml install
-      - mvn -f mail-relayer-rest/pom.xml package
+      - mvn -f mail-relayer install
+      - mvn -f mail-relayer-rest package
     when:
       event:
         - push
@@ -25,7 +25,7 @@ steps:
       - name: docker_sock
         path: /var/run/docker.sock
     commands:
-      - mvn -f mail-relayer-rest/pom.xml clean verify -Pprod
+      - mvn -f mail-relayer-rest clean verify -Pprod
     when:
       status: [success]
       branch:
@@ -47,7 +47,7 @@ steps:
       SONAR_TOKEN:
         from_secret: sonar_token
     commands:
-      - mvn -f mail-relayer-rest/pom.xml sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.buildString=$DRONE_BUILD_NUMBER -Dsonar.sources=src/main
+      - mvn -f mail-relayer-rest sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.buildString=$DRONE_BUILD_NUMBER -Dsonar.sources=src/main
     when:
       status: [success]
       event:
@@ -61,7 +61,7 @@ steps:
       - name: docker_sock
         path: /var/run/docker.sock
     commands:
-      - mvn -f mail-relayer-rest/pom.xml -Pprod verify jib:build -Djib.to.tags=latest
+      - mvn -f mail-relayer-rest -Pprod verify jib:build -Djib.to.tags=latest
     environment:
       REGISTRY_USERNAME:
         from_secret: registry_username
