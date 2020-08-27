@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>mx.conacyt.crip.mail</groupId>
-    <artifactId>mailrelayer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>mx.conacyt.crip</groupId>
+    <artifactId>mail-relayer-rest</artifactId>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
-    <name>Mailrelayer</name>
+    <name>MailRelayer</name>
 
     <repositories>
         <repository>
@@ -312,7 +312,7 @@
         <dependency>
             <groupId>mx.conacyt.crip</groupId>
             <artifactId>mail-relayer</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
