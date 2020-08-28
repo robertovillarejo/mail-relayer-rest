@@ -1,7 +1,7 @@
 # Variables específicas del proyecto
 # APICURIO API usa el término 'design' para referirse a una definición de una API (OpenAPI o Swagger)
 # La ruta donde se encuentra la definición de la API
-export DESIGN_PATH=./src/main/resources/swagger/api.json
+export DESIGN_PATH=./mail-relayer-rest/src/main/resources/swagger/api.json
 # El id del diseño de la API en APICURIO
 export APICURIO_DESIGN_ID=3
 # El nombre de usuario con permisos de edición para actualizar el diseño de la API
