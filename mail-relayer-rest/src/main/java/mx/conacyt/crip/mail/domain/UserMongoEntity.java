@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import mx.conacyt.crip.mail.config.Constants;
 
@@ -26,6 +27,9 @@ public class UserMongoEntity extends AbstractAuditingEntity {
     @Size(min = 1, max = 50)
     private String name;
 
+    @Field("message_id_suffix")
+    private String messageIdSuffix;
+
     public String getName() {
         return name;
     }
@@ -37,6 +41,19 @@ public class UserMongoEntity extends AbstractAuditingEntity {
 
     public UserMongoEntity name(String name) {
         setName(name);
+        return this;
+    }
+
+    public String getMessageIdSuffix() {
+        return this.messageIdSuffix;
+    }
+
+    public void setMessageIdSuffix(String messageIdSuffix) {
+        this.messageIdSuffix = messageIdSuffix;
+    }
+
+    public UserMongoEntity messageIdSuffix(String messageIdSuffix) {
+        this.messageIdSuffix = messageIdSuffix;
         return this;
     }
 

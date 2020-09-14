@@ -15,6 +15,8 @@ public class EmailMongoEntity {
     @DBRef
     private UserMongoEntity user;
 
+    private boolean sent;
+
     public EmailMongoEntity() {
     }
 
@@ -61,6 +63,19 @@ public class EmailMongoEntity {
 
     public EmailMongoEntity user(UserMongoEntity user) {
         this.user = user;
+        return this;
+    }
+
+    public boolean isSent() {
+        return this.sent;
+    }
+
+    public void setSent(boolean sent) {
+        this.sent = sent;
+    }
+
+    public EmailMongoEntity sent(boolean sent) {
+        this.sent = sent;
         return this;
     }
 

@@ -134,11 +134,11 @@ spring:
       client:
         provider:
           oidc:
-            issuer-uri: https://idm.crip.conacyt.mx/auth/realms/master
+            issuer-uri: https://idm.crip.conacyt.mx/auth/realms/miic
         registration:
           oidc:
-            client-id: dev-users
-            client-secret: acfa0479-d58c-438d-96f3-b65dd0d83f43
+            client-id: miic_users
+            client-secret: d75feffc-8296-4d93-82fe-ace793fdefe6
 
 server:
   servlet:

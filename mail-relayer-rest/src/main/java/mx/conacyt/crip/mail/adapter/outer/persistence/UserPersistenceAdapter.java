@@ -25,9 +25,9 @@ public class UserPersistenceAdapter implements LoadUserPort, CreateUserPort {
     }
 
     @Override
-    public User createUser(String username) {
-        UserMongoEntity user = userRepository.save(new UserMongoEntity().name(username));
-        return new User(user.getName());
+    public User createUser(String username, String msgIdSuffix) {
+        UserMongoEntity user = userRepository.save(new UserMongoEntity().name(username).messageIdSuffix(msgIdSuffix));
+        return new User(user.getName(), user.getMessageIdSuffix());
     }
 
     @Override
@@ -40,7 +40,7 @@ public class UserPersistenceAdapter implements LoadUserPort, CreateUserPort {
         Optional<UserMongoEntity> maybeUser = userRepository.findByName(name);
         if (maybeUser.isPresent()) {
             UserMongoEntity user = maybeUser.get();
-            return Optional.of(new User(user.getName()));
+            return Optional.of(new User(user.getName(), user.getMessageIdSuffix()));
         }
         return Optional.empty();
     }
@@ -50,7 +50,7 @@ public class UserPersistenceAdapter implements LoadUserPort, CreateUserPort {
         Optional<SecretKeyMongoEntity> maybeSk = secretKeyRepository.findByContent(secretKey.getContent());
         if (maybeSk.isPresent()) {
             UserMongoEntity user = maybeSk.get().getUser();
-            return Optional.of(new User(user.getName()));
+            return Optional.of(new User(user.getName(), user.getMessageIdSuffix()));
         }
         return Optional.empty();
     }

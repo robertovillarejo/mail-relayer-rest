@@ -2,17 +2,21 @@ package mx.conacyt.crip.mail.domain;
 
 import java.util.Objects;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Un usuario.
  */
+@Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class User {
 
-    @Getter
     private final String name;
+
+    private String messageIdSuffix;
 
     @Override
     public boolean equals(Object o) {

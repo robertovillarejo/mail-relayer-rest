@@ -22,6 +22,7 @@ import mx.conacyt.crip.mail.domain.exception.UsernameAlreadyExists;
 public class RegisterUserServiceTest {
 
     private static final String USERNAME = "bob";
+    private static final String MSG_ID_SUFFIX = "bob.com";
 
     private RegisterUserUseCase service;
     private UserPersistenceAdapterInMemory userPersistence;
@@ -37,7 +38,7 @@ public class RegisterUserServiceTest {
     public void registerUserSuccess() throws UsernameAlreadyExists {
         DomainEventBus.EVENT_BUS.register(this);
         // Given
-        RegisterUserCommand cmd = new RegisterUserCommand(USERNAME);
+        RegisterUserCommand cmd = new RegisterUserCommand(USERNAME, MSG_ID_SUFFIX);
         // When
         User user = service.registerUser(cmd);
         // Then
@@ -66,7 +67,7 @@ public class RegisterUserServiceTest {
     }
 
     private RegisterUserCommand givenCommand() {
-        return new RegisterUserCommand(USERNAME);
+        return new RegisterUserCommand(USERNAME, MSG_ID_SUFFIX);
     }
 
 }

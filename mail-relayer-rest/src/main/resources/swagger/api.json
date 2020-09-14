@@ -221,10 +221,14 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "messageIdSuffix": {
+            "type": "string"
           }
         },
         "example": {
-          "name": "awesomeApp"
+          "name": "awesomeApp",
+          "messageIdSuffix": "example.com"
         }
       },
       "User": {

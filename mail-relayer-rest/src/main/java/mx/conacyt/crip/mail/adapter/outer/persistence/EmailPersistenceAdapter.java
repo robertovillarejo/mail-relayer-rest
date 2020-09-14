@@ -23,7 +23,7 @@ public class EmailPersistenceAdapter implements SaveEmailPort {
     @Override
     public void saveEmail(Email email, String username) {
         UserMongoEntity user = userRepository.findByName(username).orElse(null);
-        emailRepository.save(new EmailMongoEntity().id(email.getId()).user(user));
+        emailRepository.save(new EmailMongoEntity().id(email.getId()).user(user).sent(email.getSentDate() != null));
     }
 
 }

@@ -30,7 +30,7 @@ public class UserResource implements UsersApiDelegate {
 
     @Override
     public ResponseEntity<Void> registerUser(UserRegistration info) {
-        service.registerUser(new RegisterUserCommand(info.getName()));
+        service.registerUser(new RegisterUserCommand(info.getName(), info.getMessageIdSuffix()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

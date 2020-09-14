@@ -23,7 +23,7 @@ class RegisterUserService implements RegisterUserUseCase {
         if (loadUserPort.existsUser(command.getName())) {
             throw new UsernameAlreadyExists();
         }
-        User user = createUserPort.createUser(command.getName());
+        User user = createUserPort.createUser(command.getName(), command.getMsgIdSuffix());
         DomainEventBus.EVENT_BUS.post(new UserCreated(user));
         return user;
     }

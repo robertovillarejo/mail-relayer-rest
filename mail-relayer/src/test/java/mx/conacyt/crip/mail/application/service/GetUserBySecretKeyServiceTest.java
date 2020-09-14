@@ -21,7 +21,6 @@ import mx.conacyt.crip.mail.domain.User;
 public class GetUserBySecretKeyServiceTest {
 
     private static final String SECRET_KEY_CONTENT = "abc123abc123abc123abc123";
-    private static final String USER_ID = "a1b2c3";
     private static final String USER_NAME = "username";
 
     private GetUserBySecretKeyQuery getUserBySecretKeyQuery;

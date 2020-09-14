@@ -27,7 +27,7 @@ import mx.conacyt.crip.mail.domain.UserMongoEntity;
 import mx.conacyt.crip.mail.repository.SecretKeyRepository;
 import mx.conacyt.crip.mail.repository.UserRepository;
 import mx.conacyt.crip.mail.security.AuthoritiesConstants;
-import mx.conacyt.crip.mail.web.model.User;
+import mx.conacyt.crip.mail.web.model.UserRegistration;
 
 /**
  * Integration tests for the {@link UserResource} REST controller.
@@ -39,6 +39,7 @@ public class UserResourceIT {
 
     public static final String USERNAME = "awesomeapp";
     public static final String SECRET_KEY_CONTENT = "awesomeapp";
+    private static final String MESSAGE_ID_SUFFIX = "conacyt.mx";
 
     @Autowired
     private UserRepository userRepository;
@@ -58,7 +59,7 @@ public class UserResourceIT {
     @Test
     public void registerUser() throws IOException, Exception {
         // Given
-        User user = givenUser();
+        UserRegistration user = givenNewUser();
         // When
         postUser(user)
                 // Then
@@ -70,7 +71,7 @@ public class UserResourceIT {
     @Test
     public void registerUserWithExistingName() throws IOException, Exception {
         // Given
-        User user = givenUser();
+        UserRegistration user = givenNewUser();
         userRepository.save(new UserMongoEntity().name(USERNAME));
         // When
         postUser(user)
@@ -83,7 +84,7 @@ public class UserResourceIT {
     @Test
     public void registerUserFailWithForbiddenUser() throws IOException, Exception {
         // Given
-        User user = givenUser();
+        UserRegistration user = givenNewUser();
         // When
         postUser(user)
                 // Then
@@ -103,13 +104,13 @@ public class UserResourceIT {
                 .andExpect(jsonPath("$.name").value(USERNAME));
     }
 
-    public ResultActions postUser(User user) throws IOException, Exception {
+    public ResultActions postUser(UserRegistration newUser) throws IOException, Exception {
         return restUserMockMvc.perform(post("/api/users").contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(TestUtil.convertObjectToJsonBytes(user)));
+                .content(TestUtil.convertObjectToJsonBytes(newUser)));
     }
 
-    public User givenUser() {
-        return new User().name(USERNAME);
+    public UserRegistration givenNewUser() {
+        return new UserRegistration().name(USERNAME).messageIdSuffix(MESSAGE_ID_SUFFIX);
     }
 
 }

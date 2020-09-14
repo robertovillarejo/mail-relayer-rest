@@ -1,8 +1,9 @@
 package mx.conacyt.crip.mail.application.port.in;
 
+import java.util.Objects;
+
 import org.simplejavamail.api.email.Email;
 
-import java.util.Objects;
 import lombok.Getter;
 
 /**
@@ -20,7 +21,7 @@ public class SendMailCommand {
      *
      * @param email    el email a enviar.
      * @param username el nombre del usuario quien envía.
-     * @param async    false si síncrono | true si es síncrono
+     * @param async    false si síncrono | true si es asíncrono
      */
     public SendMailCommand(final Email email, String username, final boolean async) {
         Objects.requireNonNull(email.getFromRecipient());

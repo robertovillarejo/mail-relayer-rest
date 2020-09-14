@@ -17,8 +17,8 @@ class UserPersistenceAdapterInMemory implements LoadUserPort, CreateUserPort {
     private Map<String, User> users = new HashMap<>();
 
     @Override
-    public User createUser(String username) {
-        User user = new User(username);
+    public User createUser(String username, String msgIdSuffix) {
+        User user = new User(username, msgIdSuffix);
         users.put(username, user);
         return user;
     }
