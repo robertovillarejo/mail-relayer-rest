@@ -85,6 +85,10 @@ steps:
         from_secret: apicurio_client_secret
       APICURIO_USER_PASSWORD:
         from_secret: apicurio_user_password
+    when:
+      branch:
+        include:
+          - master
 
   - name: slack compile error
     image: plugins/slack
