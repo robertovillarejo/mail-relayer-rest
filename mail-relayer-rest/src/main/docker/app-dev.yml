@@ -1,0 +1,33 @@
+version: '2'
+services:
+  mailrelayer-app:
+    image: registry.crip.conacyt.mx/library/mailrelayer
+    ports:
+      - 8081:8081
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod,swagger
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://admin:admin123@172.26.13.59:8761/eureka
+      - SPRING_CLOUD_CONFIG_URI=http://admin:admin123@172.26.13.59:8761/config
+      - SPRING_DATA_MONGODB_URI=mongodb://mailrelayer-mongodb:27017
+      - SPRING_DATA_MONGODB_DATABASE=mailrelayer
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=https://idm.crip.conacyt.mx/auth/realms/miic
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_ID=miic_users
+      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_SECRET=d75feffc-8296-4d93-82fe-ace793fdefe6
+      - JHIPSTER_SLEEP=30 # gives time for other services to boot before the application
+      - SPRING_RABBITMQ_ADDRESSES=mailrelayer-rabbitmq
+      - APPLICATION_RELAY_HOST=mailrelayer-smtp-server
+      - APPLICATION_RELAY_PORT=5025
+  mailrelayer-mongodb:
+    extends:
+      file: mongodb.yml
+      service: mailrelayer-mongodb
+  mailrelayer-rabbitmq:
+    extends:
+      file: rabbitmq.yml
+      service: mailrelayer-rabbitmq
+  mailrelayer-smtp-server:
+    image: gessnerfl/fake-smtp-server
+    ports:
+      - 5080:5080

@@ -1,0 +1,4 @@
+version: '2'
+services:
+  mailrelayer-rabbitmq:
+    image: rabbitmq:3-alpine
