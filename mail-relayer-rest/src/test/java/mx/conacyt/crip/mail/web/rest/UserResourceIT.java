@@ -27,7 +27,7 @@ import mx.conacyt.crip.mail.domain.UserMongoEntity;
 import mx.conacyt.crip.mail.repository.SecretKeyRepository;
 import mx.conacyt.crip.mail.repository.UserRepository;
 import mx.conacyt.crip.mail.security.AuthoritiesConstants;
-import mx.conacyt.crip.mail.web.model.UserRegistration;
+import mx.conacyt.crip.mail.web.model.UserRegistrationDto;
 
 /**
  * Integration tests for the {@link UserResource} REST controller.
@@ -59,7 +59,7 @@ public class UserResourceIT {
     @Test
     public void registerUser() throws IOException, Exception {
         // Given
-        UserRegistration user = givenNewUser();
+        UserRegistrationDto user = givenNewUser();
         // When
         postUser(user)
                 // Then
@@ -71,7 +71,7 @@ public class UserResourceIT {
     @Test
     public void registerUserWithExistingName() throws IOException, Exception {
         // Given
-        UserRegistration user = givenNewUser();
+        UserRegistrationDto user = givenNewUser();
         userRepository.save(new UserMongoEntity().name(USERNAME));
         // When
         postUser(user)
@@ -84,7 +84,7 @@ public class UserResourceIT {
     @Test
     public void registerUserFailWithForbiddenUser() throws IOException, Exception {
         // Given
-        UserRegistration user = givenNewUser();
+        UserRegistrationDto user = givenNewUser();
         // When
         postUser(user)
                 // Then
@@ -104,13 +104,13 @@ public class UserResourceIT {
                 .andExpect(jsonPath("$.name").value(USERNAME));
     }
 
-    public ResultActions postUser(UserRegistration newUser) throws IOException, Exception {
+    public ResultActions postUser(UserRegistrationDto newUser) throws IOException, Exception {
         return restUserMockMvc.perform(post("/api/users").contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(TestUtil.convertObjectToJsonBytes(newUser)));
     }
 
-    public UserRegistration givenNewUser() {
-        return new UserRegistration().name(USERNAME).messageIdSuffix(MESSAGE_ID_SUFFIX);
+    public UserRegistrationDto givenNewUser() {
+        return new UserRegistrationDto().name(USERNAME).messageIdSuffix(MESSAGE_ID_SUFFIX);
     }
 
 }

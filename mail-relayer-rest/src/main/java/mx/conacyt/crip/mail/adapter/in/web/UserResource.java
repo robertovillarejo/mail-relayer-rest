@@ -13,8 +13,8 @@ import mx.conacyt.crip.mail.application.port.in.RegisterUserUseCase;
 import mx.conacyt.crip.mail.domain.SecretKey;
 import mx.conacyt.crip.mail.security.AuthoritiesConstants;
 import mx.conacyt.crip.mail.web.api.UsersApiDelegate;
-import mx.conacyt.crip.mail.web.model.User;
-import mx.conacyt.crip.mail.web.model.UserRegistration;
+import mx.conacyt.crip.mail.web.model.UserDto;
+import mx.conacyt.crip.mail.web.model.UserRegistrationDto;
 
 @Secured(AuthoritiesConstants.ADMIN)
 @Component
@@ -29,16 +29,16 @@ public class UserResource implements UsersApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> registerUser(UserRegistration info) {
+    public ResponseEntity<Void> registerUser(UserRegistrationDto info) {
         service.registerUser(new RegisterUserCommand(info.getName(), info.getMessageIdSuffix()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
-    public ResponseEntity<User> getUserByName(String name) {
+    public ResponseEntity<UserDto> getUserByName(String name) {
         Optional<SecretKey> maybeSecretKey = getSecretKeyQuery.getSecretKey(name);
         if (maybeSecretKey.isPresent()) {
-            User user = new User().name(name).apiKey(maybeSecretKey.get().getContent());
+            UserDto user = new UserDto().name(name).apiKey(maybeSecretKey.get().getContent());
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.notFound().build();

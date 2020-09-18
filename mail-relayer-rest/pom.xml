@@ -754,6 +754,7 @@
                                 <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                                 <importMappings>Problem=org.zalando.problem.Problem</importMappings>
                                 <skipValidateSpec>false</skipValidateSpec>
+                                <modelNameSuffix>Dto</modelNameSuffix>
                                 <configOptions>
                                     <delegatePattern>true</delegatePattern>
                                     <title>mailrelayer</title>

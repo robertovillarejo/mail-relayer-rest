@@ -13,15 +13,15 @@ import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.api.email.Recipient;
 import org.simplejavamail.email.EmailBuilder;
 
-import mx.conacyt.crip.mail.web.model.Attachment;
-import mx.conacyt.crip.mail.web.model.Email;
+import mx.conacyt.crip.mail.web.model.AttachmentDto;
+import mx.conacyt.crip.mail.web.model.EmailDto;
 
 public class EmailDtoMapper {
 
     private EmailDtoMapper() {
     }
 
-    public static org.simplejavamail.api.email.Email map(Email email) {
+    public static org.simplejavamail.api.email.Email map(EmailDto email) {
         // @formatter:off
         EmailPopulatingBuilder builder =
             EmailBuilder.startingBlank()
@@ -56,13 +56,13 @@ public class EmailDtoMapper {
     /**
      * Mapea un {@code org.simplejavamail.api.email.Email} a {@code Email}.
      */
-    public static Email map(org.simplejavamail.api.email.Email email) {
+    public static EmailDto map(org.simplejavamail.api.email.Email email) {
         List<String> toAddresses = filterRecipientByType(email, javax.mail.Message.RecipientType.TO);
         List<String> recipientCc = filterRecipientByType(email, javax.mail.Message.RecipientType.CC);
         List<String> recipientBcc = filterRecipientByType(email, javax.mail.Message.RecipientType.BCC);
-        List<Attachment> attachments = email.getAttachments().stream().map(EmailDtoMapper::map)
+        List<AttachmentDto> attachments = email.getAttachments().stream().map(EmailDtoMapper::map)
                 .collect(Collectors.toList());
-        Email dto = new Email();
+        EmailDto dto = new EmailDto();
         dto.to(toAddresses).subject(email.getSubject()).plainBody(email.getPlainText())
                 .sender(email.getFromRecipient().getAddress()).htmlBody(email.getHTMLText());
         if (recipientCc != null) {
@@ -86,7 +86,7 @@ public class EmailDtoMapper {
      * @param attachment
      * @return
      */
-    public static Attachment map(AttachmentResource attachment) {
+    public static AttachmentDto map(AttachmentResource attachment) {
         String data;
         try {
             data = Base64.getEncoder().encodeToString(IOUtils.toByteArray(attachment.getDataSource().getInputStream()));
@@ -94,8 +94,8 @@ public class EmailDtoMapper {
             throw new RuntimeException(
                     String.format("No se pudo codificar el adjunto %s a base 64", attachment.getName()), e);
         }
-        return new Attachment().filename(attachment.getName()).contentType(attachment.getDataSource().getContentType())
-                .data(data);
+        return new AttachmentDto().filename(attachment.getName())
+                .contentType(attachment.getDataSource().getContentType()).data(data);
     }
 
     private static List<String> filterRecipientByType(org.simplejavamail.api.email.Email email,

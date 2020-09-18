@@ -30,7 +30,7 @@ import mx.conacyt.crip.mail.config.TestSecurityConfiguration;
 import mx.conacyt.crip.mail.domain.UserMongoEntity;
 import mx.conacyt.crip.mail.repository.UserRepository;
 import mx.conacyt.crip.mail.security.AuthoritiesConstants;
-import mx.conacyt.crip.mail.web.model.Email;
+import mx.conacyt.crip.mail.web.model.EmailDto;
 
 /**
  * Integration tests for the {@link EmailResource} REST controller.
@@ -63,7 +63,7 @@ public class EmailResourceIT {
     @Test
     public void sendMailSync() throws Exception {
         // Given
-        Email email = givenEmail();
+        EmailDto email = givenEmail();
         // When
         MvcResult mvcResult = restEmailMockMvc
                 .perform(post("/api/emails").contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -82,7 +82,7 @@ public class EmailResourceIT {
     @Test
     public void sendMailAsyncSuccess() throws IOException, Exception {
         // Given
-        Email email = givenEmail();
+        EmailDto email = givenEmail();
         // When
         restEmailMockMvc
                 .perform(post("/api/emails?async=true").contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -94,7 +94,7 @@ public class EmailResourceIT {
     @Test
     public void sendMailAsyncFailsAndNotify() throws Exception {
         // Given
-        Email email = givenEmail();
+        EmailDto email = givenEmail();
         // When
         restEmailMockMvc
                 .perform(post("/api/emails?async=true").contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -103,8 +103,8 @@ public class EmailResourceIT {
                 .andExpect(status().isAccepted()).andExpect(header().exists("Location"));
     }
 
-    private Email givenEmail() {
-        return new Email().sender(SENDER).to(Arrays.asList(RECIPIENT)).plainBody(BODY).subject(SUBJECT);
+    private EmailDto givenEmail() {
+        return new EmailDto().sender(SENDER).to(Arrays.asList(RECIPIENT)).plainBody(BODY).subject(SUBJECT);
     }
 
 }

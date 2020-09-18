@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import mx.conacyt.crip.mail.application.service.DomainEventBus;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncQueued;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncReceived;
+import mx.conacyt.crip.mail.web.model.EmailDto;
 
 @Component
 public class SendMailAsyncProducerConsumer {
@@ -31,7 +32,7 @@ public class SendMailAsyncProducerConsumer {
      */
     @Subscribe
     public void queueMail(EmailAsyncReceived event) {
-        mx.conacyt.crip.mail.web.model.Email dto = EmailDtoMapper.map(event.getEmail());
+        EmailDto dto = EmailDtoMapper.map(event.getEmail());
         String msgId = event.getEmail().getId();
         String userLogin = event.getUsername();
         amqpTemplate.convertAndSend("mailRelay", new SendMailAsyncDto(dto, msgId, userLogin));
