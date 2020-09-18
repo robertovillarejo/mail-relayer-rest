@@ -4,7 +4,7 @@
 
     <groupId>mx.conacyt.crip</groupId>
     <artifactId>mail-relayer-rest</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
     <name>MailRelayer</name>
 
@@ -303,9 +303,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <version>2.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
             <groupId>mx.conacyt.crip</groupId>
             <artifactId>mail-relayer</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.1.0</version>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
