@@ -45,7 +45,7 @@ then
 fi
 
 # Actualización del diseño
-echo "Actualizando el diseño con id ${DESIGN_ID} con el contenido de ${DESIGN_PATH}"
+echo "Actualizando el diseño ${APICURIO_DESIGN_ID} con el contenido de ${DESIGN_PATH}"
 curl --request PUT \
   --url ${APICURIO_HOST}/designs/${APICURIO_DESIGN_ID} \
   --header "authorization: Bearer ${ACCESS_TOKEN}" \
