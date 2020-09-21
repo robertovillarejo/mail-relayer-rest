@@ -8,8 +8,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import mx.conacyt.crip.mail.application.port.in.GetSecretKeyQuery;
-import mx.conacyt.crip.mail.application.port.in.RegisterUserCommand;
 import mx.conacyt.crip.mail.application.port.in.RegisterUserUseCase;
+import mx.conacyt.crip.mail.application.port.in.RegisterUserUseCase.RegisterUserCommand;
 import mx.conacyt.crip.mail.domain.SecretKey;
 import mx.conacyt.crip.mail.security.AuthoritiesConstants;
 import mx.conacyt.crip.mail.web.api.UsersApiDelegate;

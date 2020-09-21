@@ -11,7 +11,6 @@ import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 
 import lombok.extern.slf4j.Slf4j;
-import mx.conacyt.crip.mail.application.port.in.SendMailCommand;
 import mx.conacyt.crip.mail.application.port.in.SendMailUseCase;
 import mx.conacyt.crip.mail.application.port.out.EmailAcknowledger;
 import mx.conacyt.crip.mail.application.port.out.LoadUserPort;

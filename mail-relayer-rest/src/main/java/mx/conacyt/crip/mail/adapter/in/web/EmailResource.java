@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
-import mx.conacyt.crip.mail.application.port.in.SendMailCommand;
 import mx.conacyt.crip.mail.application.port.in.SendMailUseCase;
+import mx.conacyt.crip.mail.application.port.in.SendMailUseCase.SendMailCommand;
 import mx.conacyt.crip.mail.security.SecurityUtils;
 import mx.conacyt.crip.mail.web.api.EmailsApiDelegate;
 import mx.conacyt.crip.mail.web.model.EmailDto;

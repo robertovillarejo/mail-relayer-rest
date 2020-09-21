@@ -10,8 +10,8 @@ import com.google.common.eventbus.Subscribe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import mx.conacyt.crip.mail.application.port.in.RegisterUserCommand;
 import mx.conacyt.crip.mail.application.port.in.RegisterUserUseCase;
+import mx.conacyt.crip.mail.application.port.in.RegisterUserUseCase.RegisterUserCommand;
 import mx.conacyt.crip.mail.domain.User;
 import mx.conacyt.crip.mail.domain.events.UserCreated;
 import mx.conacyt.crip.mail.domain.exception.UsernameAlreadyExists;

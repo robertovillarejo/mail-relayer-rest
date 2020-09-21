@@ -1,7 +1,6 @@
 package mx.conacyt.crip.mail.application.service;
 
 import lombok.RequiredArgsConstructor;
-import mx.conacyt.crip.mail.application.port.in.RegisterUserCommand;
 import mx.conacyt.crip.mail.application.port.in.RegisterUserUseCase;
 import mx.conacyt.crip.mail.application.port.out.CreateUserPort;
 import mx.conacyt.crip.mail.application.port.out.LoadUserPort;

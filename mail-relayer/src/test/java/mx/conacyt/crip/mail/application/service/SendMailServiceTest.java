@@ -27,8 +27,8 @@ import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 
-import mx.conacyt.crip.mail.application.port.in.SendMailCommand;
 import mx.conacyt.crip.mail.application.port.in.SendMailUseCase;
+import mx.conacyt.crip.mail.application.port.in.SendMailUseCase.SendMailCommand;
 import mx.conacyt.crip.mail.application.port.out.EmailAcknowledger;
 import mx.conacyt.crip.mail.application.port.out.LoadUserPort;
 import mx.conacyt.crip.mail.application.port.out.SaveEmailPort;
