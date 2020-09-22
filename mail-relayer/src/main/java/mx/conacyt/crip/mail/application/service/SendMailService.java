@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.google.common.eventbus.Subscribe;
 
-import org.simplejavamail.api.email.Email;
+import org.simplejavamail.MailException;
 import org.simplejavamail.api.mailer.AsyncResponse;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
@@ -15,6 +15,8 @@ import mx.conacyt.crip.mail.application.port.in.SendMailUseCase;
 import mx.conacyt.crip.mail.application.port.out.EmailAcknowledger;
 import mx.conacyt.crip.mail.application.port.out.LoadUserPort;
 import mx.conacyt.crip.mail.application.port.out.SaveEmailPort;
+import mx.conacyt.crip.mail.domain.Mail;
+import mx.conacyt.crip.mail.domain.Status;
 import mx.conacyt.crip.mail.domain.User;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncQueued;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncReceived;
@@ -55,22 +57,29 @@ class SendMailService implements SendMailUseCase {
             throw new UserNotExists();
         }
         String messageId = messageId(maybeUser.get());
-        Email emailWithId = EmailBuilder.copying(command.getEmail()).fixingMessageId(messageId).buildEmail();
+        Mail emailWithId = new Mail(EmailBuilder.copying(command.getMail()).fixingMessageId(messageId));
         if (!command.isAsync()) {
             return sendMailSync(emailWithId, command.getUsername());
         }
         return sendMailAsync(emailWithId, command.getUsername());
     }
 
-    private String sendMailSync(Email email, String username) {
+    private String sendMailSync(Mail mail, String username) {
         log.debug("Enviando correo de forma síncrona");
-        mailer.sendMail(email);
-        saveEmailPort.saveEmail(email, username);
-        return email.getId();
+        try {
+            mailer.sendMail(mail);
+            mail.setStatus(Status.SENT);
+        } catch (MailException ex) {
+            mail.setStatus(Status.FAILED);
+        }
+        saveEmailPort.saveEmail(mail, username);
+        return mail.getId();
     }
 
-    private String sendMailAsync(Email email, String username) {
+    private String sendMailAsync(Mail email, String username) {
         log.debug("Enviando correo de forma asíncrona");
+        email.setStatus(Status.QUEUED);
+        saveEmailPort.saveEmail(email, username);
         DomainEventBus.EVENT_BUS.post(new EmailAsyncReceived(email, username));
         return email.getId();
     }
@@ -82,17 +91,19 @@ class SendMailService implements SendMailUseCase {
      */
     @Subscribe
     public void processAsyncMail(EmailAsyncQueued event) {
-        Email email = event.getEmail();
-        String emailId = email.getId();
+        Mail mail = event.getMail();
+        String emailId = mail.getId();
         String username = event.getUsername();
-        AsyncResponse response = mailer.sendMail(email, Boolean.TRUE);
+        AsyncResponse response = mailer.sendMail(mail, Boolean.TRUE);
         response.onSuccess(() -> {
             notifier.success(emailId);
-            saveEmailPort.saveEmail(email, username);
+            mail.setStatus(Status.SENT);
+            saveEmailPort.saveEmail(mail, username);
         });
         response.onException(e -> {
             notifier.fail(emailId, e);
-            saveEmailPort.saveEmail(email, username);
+            mail.setStatus(Status.FAILED);
+            saveEmailPort.saveEmail(mail, username);
         });
     }
 

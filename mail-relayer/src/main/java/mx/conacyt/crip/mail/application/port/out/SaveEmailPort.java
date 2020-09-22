@@ -1,9 +1,9 @@
 package mx.conacyt.crip.mail.application.port.out;
 
-import org.simplejavamail.api.email.Email;
+import mx.conacyt.crip.mail.domain.Mail;
 
 /**
- * Puerto para guardar un {@link Email}.
+ * Puerto para guardar un {@link Mail}.
  */
 public interface SaveEmailPort {
 
@@ -13,6 +13,6 @@ public interface SaveEmailPort {
      * @param email    el email enviado.
      * @param username el nombre del usuario que envió el email.
      */
-    void saveEmail(Email email, String username);
+    void saveEmail(Mail email, String username);
 
 }

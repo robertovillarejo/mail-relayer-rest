@@ -2,13 +2,13 @@ package mx.conacyt.crip.mail.web.rest;
 
 import com.google.common.eventbus.Subscribe;
 
-import org.simplejavamail.api.email.Email;
 import org.simplejavamail.email.EmailBuilder;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import mx.conacyt.crip.mail.application.service.DomainEventBus;
+import mx.conacyt.crip.mail.domain.Mail;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncQueued;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncReceived;
 import mx.conacyt.crip.mail.web.model.EmailDto;
@@ -32,8 +32,8 @@ public class SendMailAsyncProducerConsumer {
      */
     @Subscribe
     public void queueMail(EmailAsyncReceived event) {
-        EmailDto dto = EmailDtoMapper.map(event.getEmail());
-        String msgId = event.getEmail().getId();
+        EmailDto dto = EmailDtoMapper.map(event.getMail());
+        String msgId = event.getMail().getId();
         String userLogin = event.getUsername();
         amqpTemplate.convertAndSend("mailRelay", new SendMailAsyncDto(dto, msgId, userLogin));
     }
@@ -46,9 +46,9 @@ public class SendMailAsyncProducerConsumer {
      */
     @RabbitListener(queues = "mailRelay", id = "emailConsumer")
     public void processMail(SendMailAsyncDto dto) {
-        Email email = EmailBuilder.copying(EmailDtoMapper.map(dto.getEmail())).fixingMessageId(dto.getMessageId())
-                .buildEmail();
-        DomainEventBus.EVENT_BUS.post(new EmailAsyncQueued(email, dto.getUserLogin()));
+        Mail mail = new Mail(
+                EmailBuilder.copying(EmailDtoMapper.map(dto.getEmail())).fixingMessageId(dto.getMessageId()));
+        DomainEventBus.EVENT_BUS.post(new EmailAsyncQueued(mail, dto.getUserLogin()));
     }
 
 }

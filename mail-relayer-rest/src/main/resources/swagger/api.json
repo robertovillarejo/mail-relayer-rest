@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "mailrelayer",
-    "version": "0.0.1",
+    "version": "0.2.0",
     "description": "Servicio de envío de correos para uso de aplicaciones de CONACYT.\nEnvía los correos electrónicos hacia un servidor SMTP que otorga permisos de retransmisión a este servicio basado en IP.",
     "contact": {
       "name": "Roberto Villarejo Martínez",
@@ -24,6 +24,77 @@
     }
   ],
   "paths": {
+    "/users": {
+      "summary": "Administración de usuarios",
+      "post": {
+        "requestBody": {
+          "description": "La información del usuario a registrar.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              },
+              "examples": {
+                "NewUser": {
+                  "value": {
+                    "name": "awesomeApp",
+                    "messageIdSuffix": "example.com"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": ["user"],
+        "responses": {
+          "201": {
+            "description": "Se ha creado el usuario."
+          }
+        },
+        "security": [
+          {
+            "oauth": ["master", "email", "profile"],
+            "openId": []
+          }
+        ],
+        "operationId": "registerUser",
+        "summary": "Registra un usuario."
+      }
+    },
+    "/users/{name}": {
+      "summary": "Administra la información de un usuario.",
+      "description": "Administra la información del usuario con nombre especificado.",
+      "get": {
+        "tags": ["user"],
+        "parameters": [
+          {
+            "name": "name",
+            "description": "El nombre del usuario.",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Consulta exitosa."
+          }
+        },
+        "operationId": "getUserByName",
+        "summary": "Consulta la información del usuario",
+        "description": "Consulta la información del usuario con el nombre especificado."
+      }
+    },
     "/emails": {
       "summary": "Envío de correos electrónicos",
       "post": {
@@ -70,79 +141,103 @@
         "description": "Envía un correo electrónico."
       }
     },
-    "/users": {
-      "summary": "Administración de usuarios",
-      "post": {
-        "requestBody": {
-          "description": "La información del usuario a registrar.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserRegistration"
-              },
-              "examples": {
-                "NewUser": {
-                  "value": {
-                    "name": "awesomeApp"
-                  }
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Se ha creado el usuario."
-          }
-        },
-        "security": [
-          {
-            "oauth": ["master", "email", "profile"],
-            "openId": []
-          }
-        ],
-        "operationId": "registerUser",
-        "summary": "Registra un usuario."
-      }
-    },
-    "/users/{name}": {
-      "summary": "Administra la información de un usuario.",
-      "description": "Administra la información del usuario con nombre especificado.",
+    "/emails/{id}": {
+      "summary": "Consulta de emails.",
+      "description": "Consulta de emails.",
       "get": {
-        "parameters": [
-          {
-            "name": "name",
-            "description": "El nombre del usuario.",
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "required": true
-          }
-        ],
+        "tags": ["email"],
         "responses": {
           "200": {
+            "headers": {
+              "X-Email-Status": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "El estado actual de procesamiento del email."
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/Email"
+                },
+                "examples": {
+                  "Email": {
+                    "value": {
+                      "to": ["user@example.com"],
+                      "cc": ["userCC@example.com"],
+                      "bcc": ["userBCC@example.com"],
+                      "reply_to": "reply_to@example.com",
+                      "sender": "sender@example.com",
+                      "subject": "Asunto del mensaje",
+                      "plain_body": "Cuerpo del mensaje en texto plano",
+                      "html_body": "<html><h1>Cuerpo del mensaje en HTML</h1></html>",
+                      "attachments": [
+                        {
+                          "filename": "documento.pdf",
+                          "content_type": "application/pdf",
+                          "data": "adjuntoEnBase64"
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             },
-            "description": "Consulta exitosa."
+            "description": "El email con Message-ID especificado."
+          },
+          "404": {
+            "description": "No existe email con el Message-ID especificado."
           }
         },
-        "operationId": "getUserByName",
-        "summary": "Consuilta la información del usuario",
-        "description": "Consulta la información del usuario con el nombre especificado."
-      }
+        "operationId": "getEmailById",
+        "summary": "Consulta un email por su Message-ID.",
+        "description": "Consulta un email por su Message-ID."
+      },
+      "head": {
+        "tags": ["email"],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-Email-Status": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "El estado actual de procesamiento del email."
+              }
+            },
+            "description": "El estado del email con Message-ID especificado."
+          },
+          "404": {
+            "description": "No existe email con el Message-ID especificado."
+          }
+        },
+        "operationId": "getEmailStatusById",
+        "summary": "Obtiene el estado del email",
+        "description": "Obtiene el estado actual de procesamiento del email."
+      },
+      "parameters": [
+        {
+          "examples": {
+            "MessageID": {
+              "value": "1600455099.119799000@example.com"
+            }
+          },
+          "name": "id",
+          "description": "El Message-ID del email.",
+          "schema": {
+            "type": "string"
+          },
+          "in": "path",
+          "required": true
+        }
+      ]
     }
   },
   "components": {
     "schemas": {
       "Email": {
-        "title": "Root Type for Email",
+        "title": "Type for Email",
         "description": "Un correo electrónico",
         "required": ["subject", "to", "sender"],
         "type": "object",
@@ -215,7 +310,7 @@
         }
       },
       "UserRegistration": {
-        "title": "Root Type for User",
+        "title": "Type for User",
         "description": "La información requerida para el registro de un usuario.",
         "type": "object",
         "properties": {
@@ -232,7 +327,7 @@
         }
       },
       "User": {
-        "title": "Root Type for User",
+        "title": "Type for User",
         "description": "Un usuario.",
         "type": "object",
         "properties": {
@@ -251,7 +346,7 @@
         }
       },
       "Attachment": {
-        "title": "Root Type for Attachment",
+        "title": "Type for Attachment",
         "description": "Un archivo adjunto.",
         "type": "object",
         "properties": {

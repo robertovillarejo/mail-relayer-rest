@@ -1,9 +1,8 @@
 package mx.conacyt.crip.mail.domain.events;
 
-import org.simplejavamail.api.email.Email;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import mx.conacyt.crip.mail.domain.Mail;
 
 /**
  * Evento que indica que se ha recibido la petición de enviar un email de forma
@@ -16,7 +15,7 @@ public class EmailAsyncReceived {
     /**
      * El email recibido con un Message-ID generado.
      */
-    private final Email email;
+    private final Mail mail;
 
     /**
      * El nombre de usuario quien realizó la petición.

@@ -13,6 +13,7 @@ import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.api.email.Recipient;
 import org.simplejavamail.email.EmailBuilder;
 
+import mx.conacyt.crip.mail.domain.Mail;
 import mx.conacyt.crip.mail.web.model.AttachmentDto;
 import mx.conacyt.crip.mail.web.model.EmailDto;
 
@@ -21,7 +22,7 @@ public class EmailDtoMapper {
     private EmailDtoMapper() {
     }
 
-    public static org.simplejavamail.api.email.Email map(EmailDto email) {
+    public static Mail map(EmailDto email) {
         // @formatter:off
         EmailPopulatingBuilder builder =
             EmailBuilder.startingBlank()
@@ -50,13 +51,13 @@ public class EmailDtoMapper {
                             new ByteArrayDataSource(Base64.getDecoder().decode(a.getData()), a.getContentType())))
                     .collect(Collectors.toList()));
         }
-        return builder.buildEmail();
+        return new Mail(builder);
     }
 
     /**
-     * Mapea un {@code org.simplejavamail.api.email.Email} a {@code Email}.
+     * Mapea un {@code Email} a {@code EmailDto}.
      */
-    public static EmailDto map(org.simplejavamail.api.email.Email email) {
+    public static EmailDto map(Mail email) {
         List<String> toAddresses = filterRecipientByType(email, javax.mail.Message.RecipientType.TO);
         List<String> recipientCc = filterRecipientByType(email, javax.mail.Message.RecipientType.CC);
         List<String> recipientBcc = filterRecipientByType(email, javax.mail.Message.RecipientType.BCC);
@@ -98,8 +99,7 @@ public class EmailDtoMapper {
                 .contentType(attachment.getDataSource().getContentType()).data(data);
     }
 
-    private static List<String> filterRecipientByType(org.simplejavamail.api.email.Email email,
-            javax.mail.Message.RecipientType type) {
+    public static List<String> filterRecipientByType(Mail email, javax.mail.Message.RecipientType type) {
         return email.getRecipients().stream().filter(r -> type.toString().equals(r.getType().toString()))
                 .map(Recipient::getAddress).collect(Collectors.toList());
     }

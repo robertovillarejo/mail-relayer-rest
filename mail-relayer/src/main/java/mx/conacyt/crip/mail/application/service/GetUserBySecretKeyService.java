@@ -13,7 +13,7 @@ import mx.conacyt.crip.mail.domain.User;
  * secretKey.
  */
 @RequiredArgsConstructor
-public class GetUserBySecretKeyService implements GetUserBySecretKeyQuery {
+class GetUserBySecretKeyService implements GetUserBySecretKeyQuery {
 
     private final LoadUserPort loadUserPort;
 

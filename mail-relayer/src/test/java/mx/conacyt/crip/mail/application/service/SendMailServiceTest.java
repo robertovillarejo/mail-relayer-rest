@@ -1,10 +1,15 @@
 package mx.conacyt.crip.mail.application.service;
 
+import static mx.conacyt.crip.mail.domain.Status.FAILED;
+import static mx.conacyt.crip.mail.domain.Status.QUEUED;
+import static mx.conacyt.crip.mail.domain.Status.SENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.mockito.Mockito;
-import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
@@ -32,6 +36,8 @@ import mx.conacyt.crip.mail.application.port.in.SendMailUseCase.SendMailCommand;
 import mx.conacyt.crip.mail.application.port.out.EmailAcknowledger;
 import mx.conacyt.crip.mail.application.port.out.LoadUserPort;
 import mx.conacyt.crip.mail.application.port.out.SaveEmailPort;
+import mx.conacyt.crip.mail.domain.Mail;
+import mx.conacyt.crip.mail.domain.Status;
 import mx.conacyt.crip.mail.domain.User;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncQueued;
 import mx.conacyt.crip.mail.domain.events.EmailAsyncReceived;
@@ -89,14 +95,20 @@ public class SendMailServiceTest {
     public void sendMailAsyncSuccess() {
         server.reset();
         // Given
-        Email email = givenEmail();
-        SendMailCommand cmd = new SendMailCommand(email, USER_ID, true);
+        Mail mail = givenEmail();
+        SendMailCommand cmd = new SendMailCommand(mail, USER_ID, true);
         // When
         String msgId = sendMailService.sendMail(cmd);
         // Then
+        emailPersistedWithStatus(QUEUED);
+        // Se acusa de éxito de envío
         verify(acknowledger, timeout(ASYNC_SUCCESS_VERIFICATION_TIMEOUT)).success(eq(msgId));
+        emailPersistedWithStatus(SENT);
+        // La bandeja de entrada tiene 1 mail recibido
         assertEquals(1, server.getReceivedEmails().size());
+        // Sucedió el evento
         assertTrue(eventHappened);
+        // Verifica los campos del mail enviado
         verifySentEmail(msgId);
     }
 
@@ -104,12 +116,14 @@ public class SendMailServiceTest {
     public void sendMailAsyncFailsAndNotify() throws IOException {
         // Given
         server.stop();
-        Email email = givenEmail();
-        SendMailCommand cmd = new SendMailCommand(email, USER_ID, true);
+        Mail mail = givenEmail();
+        SendMailCommand cmd = new SendMailCommand(mail, USER_ID, true);
         // When
         String msgId = sendMailService.sendMail(cmd);
         // Then
+        emailPersistedWithStatus(QUEUED);
         verify(acknowledger, timeout(ASYNC_FAIL_VERIFICATION_TIMEOUT)).fail(eq(msgId), any());
+        emailPersistedWithStatus(FAILED);
         // Teardown
         server = SimpleSmtpServer.start(server.getPort());
     }
@@ -136,12 +150,12 @@ public class SendMailServiceTest {
     @Subscribe
     public void processAsyncMail(EmailAsyncReceived event) {
         eventHappened = Boolean.TRUE;
-        DomainEventBus.EVENT_BUS.post(new EmailAsyncQueued(event.getEmail(), event.getUsername()));
+        DomainEventBus.EVENT_BUS.post(new EmailAsyncQueued(event.getMail(), event.getUsername()));
     }
 
-    public static Email givenEmail() {
-        return EmailBuilder.startingBlank().from(SENDER).toMultiple(Arrays.asList(RECIPIENT)).withSubject(SUBJECT)
-                .withPlainText(BODY).buildEmail();
+    public static Mail givenEmail() {
+        return new Mail(EmailBuilder.startingBlank().from(SENDER).toMultiple(Arrays.asList(RECIPIENT))
+                .withSubject(SUBJECT).withPlainText(BODY));
     }
 
     private User user() {
@@ -155,6 +169,11 @@ public class SendMailServiceTest {
         assertEquals(SUBJECT, msg.getHeaderValue("Subject"));
         assertEquals(SENDER, msg.getHeaderValue("From"));
         assertEquals(RECIPIENT, msg.getHeaderValue("To"));
+    }
+
+    private void emailPersistedWithStatus(Status status) {
+        verify(saveEmailPort, atLeastOnce()).saveEmail(argThat((Mail mailArg) -> status.equals(mailArg.getStatus())),
+                eq(USER_ID));
     }
 
 }

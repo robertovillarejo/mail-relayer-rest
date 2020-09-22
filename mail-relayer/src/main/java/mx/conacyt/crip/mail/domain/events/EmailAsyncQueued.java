@@ -1,9 +1,8 @@
 package mx.conacyt.crip.mail.domain.events;
 
-import org.simplejavamail.api.email.Email;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import mx.conacyt.crip.mail.domain.Mail;
 
 /**
  * Evento que indica que se ha encolado un {@code Email} en la cola de trabajo.
@@ -15,7 +14,7 @@ public class EmailAsyncQueued {
     /**
      * El email encolado.
      */
-    private final Email email;
+    private final Mail mail;
 
     /**
      * El nombre del usuario quien realizó la petición.

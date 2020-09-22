@@ -11,7 +11,7 @@ import mx.conacyt.crip.mail.domain.SecretKey;
  * Implementación de la consulta para obtener una secretKey.
  */
 @RequiredArgsConstructor
-public class GetSecretKeyService implements GetSecretKeyQuery {
+class GetSecretKeyService implements GetSecretKeyQuery {
 
     private final LoadSecretKeyPort loadSecretPort;
 

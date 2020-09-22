@@ -34,7 +34,7 @@ public class GetSecretKeyServiceTest {
 
     @Test
     public void getSecretKey() {
-        // Given
+        // Given USER_ID
         // When
         Optional<SecretKey> maybeSk = service.getSecretKey(USER_ID);
         // Then
