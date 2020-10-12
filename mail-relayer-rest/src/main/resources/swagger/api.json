@@ -54,7 +54,7 @@
         },
         "security": [
           {
-            "oauth": ["master", "email", "profile"],
+            "oauth": ["miic", "email", "profile"],
             "openId": []
           }
         ],
@@ -383,12 +383,18 @@
       "oauth": {
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "https://idm.crip.conacyt.mx/auth/realms/master/protocol/openid-connect/auth",
-            "tokenUrl": "https://idm.crip.conacyt.mx/auth/realms/master/protocol/openid-connect/token",
+            "authorizationUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/protocol/openid-connect/auth",
+            "tokenUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/protocol/openid-connect/token",
             "scopes": {
-              "master": "master specific claims",
+              "openid": "OpenID claims",
               "email": "Email claims",
-              "profile": "Profile claims"
+              "address": "Address claims",
+              "phone": "Phone claims",
+              "roles": "Roles",
+              "web-origins": "web origins claims",
+              "offline_access": "Offline access",
+              "profile": "Profile claims",
+              "microprofile-jwt": "Microprofile JWT"
             }
           }
         },
@@ -396,7 +402,7 @@
         "description": "OAuth2 authentication with KeyCloak"
       },
       "openId": {
-        "openIdConnectUrl": "https://idm.crip.conacyt.mx/auth/realms/master/.well-known/openid-configuration",
+        "openIdConnectUrl": "https://idm.crip.conacyt.mx/auth/realms/miic/.well-known/openid-configuration",
         "type": "openIdConnect",
         "description": "OpenID Connect authentication with KeyCloak"
       },
@@ -410,10 +416,10 @@
   },
   "security": [
     {
-      "oauth": ["master", "email", "profile"]
+      "oauth": ["openid", "email", "address", "phone", "roles", "web-origins", "offline_access", "profile", "microprofile-jwt"]
     },
     {
-      "openId": ["master", "email", "profile"]
+      "openId": ["openid", "email", "address", "phone", "roles", "web-origins", "offline_access", "profile", "microprofile-jwt"]
     }
   ]
 }
