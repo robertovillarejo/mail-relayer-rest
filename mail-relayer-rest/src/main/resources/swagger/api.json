@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "mailrelayer",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Servicio de envío de correos para uso de aplicaciones de CONACYT.\nEnvía los correos electrónicos hacia un servidor SMTP que otorga permisos de retransmisión a este servicio basado en IP.",
     "contact": {
       "name": "Roberto Villarejo Martínez",
