@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -28,11 +27,14 @@ public class EmailResource implements EmailsApiDelegate {
 
     private static final String MAIL_STATUS_HEADER = "X-Email-Status";
 
-    @Autowired
-    private SendMailUseCase sendMailUseCase;
+    private final SendMailUseCase sendMailUseCase;
 
-    @Autowired
-    private GetMailQuery getMailQuery;
+    private final GetMailQuery getMailQuery;
+
+    public EmailResource(SendMailUseCase sendMailUseCase, GetMailQuery getMailQuery) {
+        this.sendMailUseCase = sendMailUseCase;
+        this.getMailQuery = getMailQuery;
+    }
 
     @Override
     public ResponseEntity<Void> sendEmail(EmailDto email, Boolean async) {
@@ -80,7 +82,7 @@ public class EmailResource implements EmailsApiDelegate {
 
     private HttpHeaders mailStatusHeader(@NotNull Mail mail) {
         if (mail.getStatus() == null) {
-            return null;
+            return HttpHeaders.EMPTY;
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add(MAIL_STATUS_HEADER, mail.getStatus().toString());
