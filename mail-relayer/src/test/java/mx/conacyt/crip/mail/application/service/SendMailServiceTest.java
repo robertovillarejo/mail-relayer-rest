@@ -73,14 +73,14 @@ public class SendMailServiceTest {
         acknowledger = Mockito.mock(EmailAcknowledger.class);
         saveEmailPort = Mockito.mock(SaveEmailPort.class);
         loadUserPort = Mockito.mock(LoadUserPort.class);
-        when(loadUserPort.loadUser(eq(USER_ID))).thenReturn(Optional.of(user()));
+        when(loadUserPort.loadUser(USER_ID)).thenReturn(Optional.of(user()));
         server = SimpleSmtpServer.start(SimpleSmtpServer.AUTO_SMTP_PORT);
         mailer = MailerBuilder.withSMTPServer("127.0.0.1", server.getPort()).buildMailer();
         sendMailService = new SendMailService(mailer, saveEmailPort, loadUserPort, acknowledger);
     }
 
     @Test
-    public void sendMailSync() {
+    void sendMailSync() {
         server.reset();
         // Given
         SendMailCommand cmd = new SendMailCommand(givenEmail(), USER_ID, false);
@@ -92,7 +92,7 @@ public class SendMailServiceTest {
     }
 
     @Test
-    public void sendMailAsyncSuccess() {
+    void sendMailAsyncSuccess() {
         server.reset();
         // Given
         Mail mail = givenEmail();
@@ -102,7 +102,7 @@ public class SendMailServiceTest {
         // Then
         emailPersistedWithStatus(QUEUED);
         // Se acusa de éxito de envío
-        verify(acknowledger, timeout(ASYNC_SUCCESS_VERIFICATION_TIMEOUT)).success(eq(msgId));
+        verify(acknowledger, timeout(ASYNC_SUCCESS_VERIFICATION_TIMEOUT)).success(msgId);
         emailPersistedWithStatus(SENT);
         // La bandeja de entrada tiene 1 mail recibido
         assertEquals(1, server.getReceivedEmails().size());
@@ -113,7 +113,7 @@ public class SendMailServiceTest {
     }
 
     @Test
-    public void sendMailAsyncFailsAndNotify() throws IOException {
+    void sendMailAsyncFailsAndNotify() throws IOException {
         // Given
         server.stop();
         Mail mail = givenEmail();
@@ -129,7 +129,7 @@ public class SendMailServiceTest {
     }
 
     @Test
-    public void sendMailFailWithNotExistentUser() {
+    void sendMailFailWithNotExistentUser() {
         // Given
         SendMailCommand cmd = new SendMailCommand(givenEmail(), "esteIdNoExiste", true);
         // Then
