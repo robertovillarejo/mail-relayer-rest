@@ -52,26 +52,35 @@ class SendMailService implements SendMailUseCase {
 
     @Override
     public String sendMail(SendMailCommand command) {
+        // validar que el usuario exista
         Optional<User> maybeUser = loadUserPort.loadUser(command.getUsername());
         if (!maybeUser.isPresent()) {
             throw new UserNotExists();
         }
+        // genera un id de email
         String messageId = messageId(maybeUser.get());
+        // construye un nuevo mail a partir del comando pero con el id de email recien
+        // generado
         Mail emailWithId = new Mail(EmailBuilder.copying(command.getMail()).fixingMessageId(messageId));
         if (!command.isAsync()) {
+            // envía el mail de forma síncrona
             return sendMailSync(emailWithId, command.getUsername());
         }
+        // envía el mail de forma asíncrona
         return sendMailAsync(emailWithId, command.getUsername());
     }
 
     private String sendMailSync(Mail mail, String username) {
         log.debug("Enviando correo de forma síncrona");
         try {
+            // envía el mail y cambia el estado a enviado
             mailer.sendMail(mail);
             mail.setStatus(Status.SENT);
         } catch (MailException ex) {
+            // cambia el estado a fallido
             mail.setStatus(Status.FAILED);
         }
+        // persiste el email
         saveEmailPort.saveEmail(mail, username);
         return mail.getId();
     }

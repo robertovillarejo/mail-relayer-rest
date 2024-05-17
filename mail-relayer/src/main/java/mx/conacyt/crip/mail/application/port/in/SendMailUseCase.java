@@ -36,9 +36,9 @@ public interface SendMailUseCase {
          * @param async    false si síncrono | true si es asíncrono
          */
         public SendMailCommand(final Mail mail, String username, final boolean async) {
-            Objects.requireNonNull(mail.getFromRecipient());
+            Objects.requireNonNull(mail.getFromRecipient()); // remitente no puede ser nulo
             Objects.requireNonNull(username);
-            Objects.requireNonNull(mail.getRecipients());
+            Objects.requireNonNull(mail.getRecipients()); // destinatarios no pueden ser nulo
             this.mail = mail;
             this.username = username;
             this.async = async;

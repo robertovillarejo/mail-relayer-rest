@@ -25,12 +25,14 @@ public class ApplicationConfiguration {
 
     @Bean
     public Mailer mailer(ApplicationProperties props) {
+        // construye un nuevo Mailer usando las propiedades de la aplicación
         return MailerBuilder.withSMTPServer(props.getRelayHost(), props.getRelayPort()).buildMailer();
     }
 
     @Bean
     public SendMailUseCase sendMailUseCase(Mailer mailer, EmailAcknowledger acknowledger, LoadUserPort loadUserPort,
             SaveEmailPort saveEmailPort) {
+        // instancia el servicio para enviar emails
         return new SendMailService(mailer, saveEmailPort, loadUserPort, acknowledger);
     }
 
